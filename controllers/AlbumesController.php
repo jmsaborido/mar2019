@@ -5,6 +5,7 @@ namespace app\controllers;
 use Yii;
 use app\models\Albumes;
 use app\models\AlbumesSearch;
+use app\models\ArtistasSearch;
 use app\models\Temas;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
@@ -54,17 +55,23 @@ class AlbumesController extends Controller
      */
     public function actionView($id)
     {
+
+        $searchModel = new ArtistasSearch();
+
         $album = $this->findModel($id);
 
         $temas = new ActiveDataProvider([
             'query' => $album->getTemas(),
         ]);
         $artistas = new ActiveDataProvider([
-            'query' => null,
+            'query' => $album->getArtistas(),
         ]);
 
         return $this->render('view', [
-            // Sin acabar
+            'album' => $album,
+            'temas' => $temas,
+            'artistas' => $artistas,
+            'searchModel' => $searchModel
         ]);
     }
 

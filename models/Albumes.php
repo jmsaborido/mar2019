@@ -73,7 +73,7 @@ class Albumes extends \yii\db\ActiveRecord
     public static function findWithTotal()
     {
         return static::find()
-            ->select(['albumes.*', "COALESCE(SUM(t.duracion), 'PT0S') AS total"])
+            ->select(['albumes.*', "SUM(COALESCE(t.duracion, 'PT0S')) AS total"])
             ->joinWith('temas t')
             ->groupBy('albumes.id');
     }
@@ -96,5 +96,10 @@ class Albumes extends \yii\db\ActiveRecord
     public function getTemas()
     {
         return $this->hasMany(Temas::className(), ['id' => 'tema_id'])->viaTable('albumes_temas', ['album_id' => 'id']);
+    }
+
+    public function getArtistas()
+    {
+        return $this->hasMany(Artistas::class, ['id' => 'id'])->via('temas');
     }
 }
