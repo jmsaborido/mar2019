@@ -5,8 +5,7 @@ namespace app\controllers;
 use Yii;
 use app\models\Albumes;
 use app\models\AlbumesSearch;
-use app\models\ArtistasSearch;
-use app\models\Temas;
+use app\models\TemasSearch;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -56,7 +55,7 @@ class AlbumesController extends Controller
     public function actionView($id)
     {
 
-        $searchModel = new ArtistasSearch();
+        $searchModel = new TemasSearch();
 
         $album = $this->findModel($id);
 
@@ -122,7 +121,12 @@ class AlbumesController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+        if ($model->getTemas()->exists()) {
+            Yii::$app->session->setFlash('error', 'No se puede borrar el tema.');
+        } else {
+            $model->delete();
+        }
 
         return $this->redirect(['index']);
     }

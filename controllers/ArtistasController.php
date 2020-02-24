@@ -104,7 +104,12 @@ class ArtistasController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+        if ($model->getTemas()->exists()) {
+            Yii::$app->session->setFlash('error', 'No se puede borrar el tema.');
+        } else {
+            $model->delete();
+        }
 
         return $this->redirect(['index']);
     }
